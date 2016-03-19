@@ -37,11 +37,10 @@ class RestAPI {
 
     private function request($method, $path, $params = array()) {
         $url = $this->api.rtrim($path, '/').'/';
-
         $client = new Client([
-            'base_uri' => $url,
-            'auth' => [$this->auth_id, $this->auth_token],
-            'http_errors' => false
+            'base_url' => $url,
+            'http_errors' => false,
+            'verify' => false
         ]);
 
         if (!strcmp($method, "POST")) {
@@ -50,14 +49,17 @@ class RestAPI {
             $response = $client->post('', array(
                 'headers' => [ 'Content-type' => 'application/json'],
                 'body'    => $body,
+                'auth' => [$this->auth_id, $this->auth_token],
             ));
         } else if (!strcmp($method, "GET")) {
             $response = $client->get('', array(
                 'query' => $params,
+                'auth' => [$this->auth_id, $this->auth_token],
             ));
         } else if (!strcmp($method, "DELETE")) {
             $response = $client->delete('', array(
                 'query' => $params,
+                'auth' => [$this->auth_id, $this->auth_token],
             ));
         }
         $responseData = json_decode($response->getBody(), true);
